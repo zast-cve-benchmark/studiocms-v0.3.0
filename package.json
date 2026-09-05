@@ -1,0 +1,98 @@
+{
+  "name": "root",
+  "private": true,
+  "packageManager": "pnpm@10.17.0",
+  "engines": {
+    "node": "22.20.0"
+  },
+  "scripts": {
+    "effect-language-service": "effect-language-service",
+    "start": "node ./playground/dist/server/entry.mjs",
+    "start:env": "dotenvx run -- node ./playground/dist/server/entry.mjs",
+
+    "changeset": "changeset",
+    "changeset:status": "changeset status --since=origin/main",
+
+    "knip": "knip",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "postinstall": "ts-patch install",
+    "clean:node": "node ./scripts/clean-node-modules.mjs",
+    "clean:pnpm-lock": "pnpm clean:node && node ./scripts/clean-pnpm-lockfile.mjs",
+    "reset:pnpm": "pnpm clean:pnpm-lock && pnpm install",
+
+    "allure:clean": "node -e \"require('fs').rmSync('allure-results', { recursive: true, force: true })\"",
+    "allure:serve": "allure serve allure-results",
+
+    "test": "pnpm allure:clean && vitest run",
+    "test:allure": "pnpm test && pnpm allure:serve",
+    "test:watch": "pnpm allure:clean && vitest",
+
+    "build": "pnpm build:packages",
+    "build:studiocms": "pnpm build:packages",
+    "build:packages": "pnpm --filter studiocms --filter @studiocms/* --filter @withstudiocms/* build",
+
+    "create-migration": "pnpm --filter @withstudiocms/sdk create-migration",
+
+    "playground:dev": "pnpm dev",
+    "playground:preview": "pnpm --filter node-playground preview",
+    "playground:build": "pnpm --filter node-playground build",
+    "playground:cli": "pnpm --filter node-playground studiocms",
+    "playground:migrate": "pnpm --filter node-playground migrate",
+
+    "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter=!@studiocms/migrator --filter @withstudiocms/* --filter node-playground -r --parallel dev",
+    "dev:migrator": "pnpm build:packages && pnpm exec studiocms-migrator",
+
+    "ci:lint": "biome ci --reporter=github",
+    "ci:install": "pnpm install --frozen-lockfile",
+    "ci:version": "pnpm changeset version",
+    "ci:publish": "pnpm changeset publish",
+    "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './packages/*'",
+    "ci:test": "vitest run --coverage",
+    "ci:build": "pnpm build:packages",
+
+    "ci:typecheck:studiocms": "pnpm --filter studiocms typecheck",
+    "ci:typecheck:studiocms-packages": "pnpm --filter @studiocms/* typecheck",
+    "ci:typecheck:withstudiocms": "pnpm --filter @withstudiocms/* typecheck",
+
+    "effect-check:studiocms": "pnpm --filter studiocms effect-check",
+    "effect-check:studiocms-packages": "pnpm --filter @studiocms/* effect-check",
+    "effect-check:withstudiocms": "pnpm --filter @withstudiocms/* effect-check",
+
+    "ci:effect-check:studiocms": "pnpm --filter studiocms ci:effect-check",
+    "ci:effect-check:studiocms-packages": "pnpm --filter @studiocms/* -r --workspace-concurrency=1 ci:effect-check",
+    "ci:effect-check:withstudiocms": "pnpm --filter @withstudiocms/* -r --workspace-concurrency=1 ci:effect-check",
+
+    "bundle-test:blog": "pnpm --filter @bundletests/studiocms-blog build",
+    "bundle-test:headless": "pnpm --filter @bundletests/studiocms-headless build"
+  },
+  "devDependencies": {
+    "@actions/core": "^2.0.2",
+    "@biomejs/biome": "^2.3.11",
+    "@changesets/changelog-github": "^0.5.2",
+    "@changesets/cli": "^2.29.8",
+    "@changesets/config": "^3.1.2",
+    "@changesets/write": "^0.4.0",
+    "@crowdin/crowdin-api-client": "^1.51.1",
+    "@dotenvx/dotenvx": "^1.51.4",
+    "@effect/language-service": "^0.64.1",
+    "@effect/vitest": "^0.27.0",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@withstudiocms/buildkit": "workspace:^",
+    "@studiocms/migrator": "workspace:^",
+    "@inox-tools/astro-tests": "^0.8.0",
+    "allure-js-commons": "^3.4.4",
+    "allure-vitest": "^3.4.4",
+    "allure-commandline": "^2.36.0",
+    "execa": "^9.6.1",
+    "knip": "^5.80.2",
+    "pkg-pr-new": "^0.0.62",
+    "studiocms": "workspace:^",
+    "typescript": "catalog:",
+    "ts-patch": "^3.3.0",
+    "vite": "catalog:astrojs",
+    "vitest": "^3.2.4",
+    "jsdom": "^27.4.0"
+  }
+}

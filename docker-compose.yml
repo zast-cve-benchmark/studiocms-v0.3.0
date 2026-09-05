@@ -1,0 +1,19 @@
+services:
+  studiocms:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4321:4321"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=4321
+      - CMS_ENCRYPTION_KEY=o4GF3sGCUnttw17Gvb4bVQ==
+      - CMS_LIBSQL_URL=file:local.db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4321/"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 120s
+    restart: unless-stopped
